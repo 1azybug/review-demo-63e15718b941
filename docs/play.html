@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RACE-Bench · playing</title>
+<style>
+html,body{margin:0;height:100%;background:#080c14;color:#e7eefc;font:14px/1.5 -apple-system,"Segoe UI",Roboto,"Noto Sans SC",Arial,sans-serif}
+#bar{height:46px;display:flex;align-items:center;gap:14px;padding:0 16px;background:#0d1420;border-bottom:1px solid #1d2b42}
+#bar a{color:#8fb4ee;text-decoration:none}#bar .t{font-weight:600}#bar .sp{flex:1}
+#frame{display:block;width:100%;height:calc(100vh - 46px);border:0;background:#0b1220}
+#race-gate{position:fixed;inset:0;background:rgba(6,10,18,.82);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
+#race-gate .box{max-width:520px;background:#111a29;border:1px solid #2b3a55;border-radius:16px;padding:26px 26px 20px;text-align:center}
+#race-gate h3{margin:0 0 8px;font-size:20px}#race-gate p{color:#a9bdd9;margin:0 0 16px;font-size:14px}
+#race-gate .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+#race-gate button{cursor:pointer;font-size:14px;padding:11px 16px;border-radius:10px;border:1px solid #2b3a55;background:#182338;color:#e7eefc}
+#race-gate button:hover{border-color:#2f7cf6;background:#1d2c47}
+#race-gate .nm{margin:2px 0 10px;color:#a9bdd9;font-size:12.5px}#race-gate .nm input{margin-top:6px;width:260px;max-width:90%;padding:8px 10px;border-radius:8px;border:1px solid #2b3a55;background:#0d1420;color:#e7eefc;font-size:13px}#race-gate small{color:#6b81a3;font-size:11.5px;line-height:1.6}
+.who{color:#9fd0ff}
+</style></head><body>
+<div id="bar"><a href="index.html">← Back / 返回</a><span class="t" id="ttl">RACE-Bench</span><span class="sp"></span><span id="idb"></span><span id="stat" style="color:#6b81a3;font-size:12px">(not recorded · 不记录)</span></div>
+<iframe id="frame"></iframe>
+<script src="config.js"></script>
+<script>
+var q=new URLSearchParams(location.search);var gid=q.get('gid')||'a/A1_Concentration';
+var dir=gid.split('/')[1];var bid=dir.split('_')[0].toLowerCase();var nmx=dir.split('_').slice(1).join(' ');
+document.getElementById('ttl').textContent=(RACE_CFG.names[bid]||nmx)+' · '+bid.toUpperCase();
+
+var f=document.getElementById('frame');f.src=gid+'/index.html';
+var lastA=0,lastP=false,started=Date.now(),sent=0,st=document.getElementById('stat');
+
+function report(passed,rounds,ms){/* 不记录任何结果 */ if(st)st.textContent='(not recorded / 不记录)';}
+setInterval(function(){try{var b=f.contentWindow.BENCH;if(!b)return;var ac=b.attempts_completed||0;
+ if(ac>lastA){var passed=(b.passed===true&&!lastP);report(passed,ac,Date.now()-started);lastA=ac;lastP=!!b.passed;started=Date.now();}
+ else{if(b.passed===true)lastP=true;}}catch(e){}},400);
+</script></body></html>
